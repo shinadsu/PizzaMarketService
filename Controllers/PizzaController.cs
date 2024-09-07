@@ -14,17 +14,55 @@ namespace PizzaMarketService.Controllers
 			_pizzaRepository = pizzaRepository;
 		}
 
-		[HttpGet]
+		[HttpGet(Name = "GetPizzasAsync")]
 		public async Task<List<Pizza>> GetPizzasAsync()
 		{
 			return await _pizzaRepository.GetPizzas();
 		}
 
-		[HttpGet("id")]
+		[HttpGet("id:int")]
 		public async Task<Pizza> GetPizza(int id)
 		{
 			return await _pizzaRepository.GetPizza(id);
 		}
 
+		[HttpPost(Name = "AddPizzaAsync")]
+		public async Task AddPizzaAsync(Pizza pizza)
+		{
+			if (pizza == null)
+				throw new ArgumentNullException(nameof(pizza));
+			
+
+			if (ModelState.IsValid)
+			{
+				try
+				{
+					await _pizzaRepository.AddAsync(pizza);
+				}
+				catch (Exception ex)
+				{
+
+					throw new Exception(ex.Message);
+				}
+			}
+		}
+
+		[HttpDelete("id:int")]
+		[IgnoreAntiforgeryToken]
+		public async Task DeletePizza(int id)
+		{
+			if (id == 0)
+				throw new ArgumentNullException(nameof(id));
+
+			try
+			{
+				await _pizzaRepository.DeleteAsync(id);
+			}
+			catch (Exception ex)
+			{
+
+				throw new Exception(ex.Message);
+			}
+		}
 	}
 }

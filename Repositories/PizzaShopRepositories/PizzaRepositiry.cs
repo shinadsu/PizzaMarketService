@@ -39,5 +39,6 @@ namespace PizzaMarketService.Repositories.PizzaShopRepositories
 		{
 			return await _dataContext.pizzas.Where(p => p.IsAvailable != false).ToListAsync();
 		}
+
 	}
 }
