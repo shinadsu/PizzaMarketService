@@ -4,7 +4,6 @@ using PizzaMarketService.Models;
 namespace PizzaMarketService.Data
 {	
 
-
 	public class DataContext : DbContext
 	{
 		
