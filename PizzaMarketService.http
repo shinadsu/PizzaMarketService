@@ -1,6 +1,13 @@
 @PizzaMarketService_HostAddress = http://localhost:5127
 
-GET {{PizzaMarketService_HostAddress}}/weatherforecast/
+GET {{PizzaMarketService_HostAddress}}/api/Pizza
 Accept: application/json
 
 ###
+GET {{PizzaMarketService_HostAddress}}/api/Pizza/id?id=1
+Content-Type: application/json
+
+###
+
+
+
