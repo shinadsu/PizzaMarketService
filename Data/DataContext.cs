@@ -22,6 +22,5 @@ namespace PizzaMarketService.Data
 		public DbSet<Ingredient> ingredients	{ get; set; }
 		public DbSet<Category> categories		{ get; set; }
 
-
-	}
+	}	
 }
