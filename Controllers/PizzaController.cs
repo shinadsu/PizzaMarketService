@@ -17,8 +17,6 @@ namespace PizzaMarketService.Controllers
 		[HttpGet]
 		public async Task<List<Pizza>> GetPizzasAsync()
 		{
-			var res = await _pizzaRepository.GetPizzas();
-            Console.WriteLine(res);
 			return await _pizzaRepository.GetPizzas();
 		}
 
