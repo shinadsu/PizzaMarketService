@@ -9,32 +9,32 @@ namespace PizzaMarketService.Controllers
 {
 	[Route("api/[controller]")]
 	[ApiController]
-	public class PizzaController : ControllerBase
+	public class FastfoodController : ControllerBase
 	{
-		private IPizzaRepository _pizzaRepository;
-		public PizzaController(IPizzaRepository pizzaRepository)
+		private IFastfoodRepository _fastfoodRepository;
+		public FastfoodController(IFastfoodRepository fastfoodRepository)
 		{
-			_pizzaRepository = pizzaRepository;
+			_fastfoodRepository = fastfoodRepository;
 		}
 
 		[HttpGet(Name = "GetPizzasAsync")]
-		public async Task<List<Pizza>> GetPizzasAsync()
+		public async Task<List<Fastfood>> GetFastfoodsAsync()
 		{
-			return await _pizzaRepository.GetPizzas();
+			return await _fastfoodRepository.GetFastfoods();
 		}
 
 
 		[HttpGet("id:int")]
-		public async Task<Pizza> GetPizza(int id)
+		public async Task<Fastfood> GetPizza(int id)
 		{
-			return await _pizzaRepository.GetPizza(id);
+			return await _fastfoodRepository.GetFastfood(id);
 		}
 
 
 		[HttpPost(Name = "AddPizzaAsync")]
-		public async Task<IActionResult> AddPizzaAsync(Pizza pizza)
+		public async Task<IActionResult> AddPizzaAsync(Fastfood fastfood)
 		{
-			if (pizza == null)
+			if (fastfood == null)
 				return BadRequest("Order is null");
 
 			if (!ModelState.IsValid)
@@ -42,8 +42,8 @@ namespace PizzaMarketService.Controllers
 
 			try
 			{
-				await _pizzaRepository.AddAsync(pizza);
-				return Ok(pizza);
+				await _fastfoodRepository.AddAsync(fastfood);
+				return Ok(fastfood);
 			}
 			catch (DbUpdateException dbEx)
 			{
@@ -65,7 +65,7 @@ namespace PizzaMarketService.Controllers
 
 			try
 			{
-				await _pizzaRepository.DeleteAsync(id);
+				await _fastfoodRepository.DeleteAsync(id);
 				return Ok("the order was deleted");
 			}
 			catch (DbException DBex)

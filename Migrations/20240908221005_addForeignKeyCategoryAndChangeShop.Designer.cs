@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using PizzaMarketService.Data;
 
@@ -11,9 +12,11 @@ using PizzaMarketService.Data;
 namespace PizzaMarketService.Migrations
 {
     [DbContext(typeof(DataContext))]
-    partial class DataContextModelSnapshot : ModelSnapshot
+    [Migration("20240908221005_addForeignKeyCategoryAndChangeShop")]
+    partial class addForeignKeyCategoryAndChangeShop
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -30,15 +33,13 @@ namespace PizzaMarketService.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<int?>("FastfoodId")
-                        .HasColumnType("int");
+                    b.Property<string>("Description")
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Name")
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("FastfoodId");
 
                     b.ToTable("categories");
                 });
@@ -50,6 +51,9 @@ namespace PizzaMarketService.Migrations
                         .HasColumnType("int");
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("CategoryId")
+                        .HasColumnType("int");
 
                     b.Property<string>("Description")
                         .HasColumnType("nvarchar(max)");
@@ -70,6 +74,8 @@ namespace PizzaMarketService.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("CategoryId");
 
                     b.ToTable("fastfoods");
                 });
@@ -255,11 +261,15 @@ namespace PizzaMarketService.Migrations
                     b.ToTable("users");
                 });
 
-            modelBuilder.Entity("PizzaMarketService.Models.Category", b =>
+            modelBuilder.Entity("PizzaMarketService.Models.Fastfood", b =>
                 {
-                    b.HasOne("PizzaMarketService.Models.Fastfood", null)
-                        .WithMany("Categorys")
-                        .HasForeignKey("FastfoodId");
+                    b.HasOne("PizzaMarketService.Models.Category", "Category")
+                        .WithMany()
+                        .HasForeignKey("CategoryId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Category");
                 });
 
             modelBuilder.Entity("PizzaMarketService.Models.Ingredient", b =>
@@ -289,8 +299,6 @@ namespace PizzaMarketService.Migrations
 
             modelBuilder.Entity("PizzaMarketService.Models.Fastfood", b =>
                 {
-                    b.Navigation("Categorys");
-
                     b.Navigation("ingredients");
                 });
 

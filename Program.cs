@@ -14,16 +14,20 @@ builder.Services.AddDbContext<DataContext>(options =>
 	}));
 
 // scoped interface & clss 
-builder.Services.AddScoped<IPizzaRepository, PizzaRepository>();
+builder.Services.AddScoped<IFastfoodRepository, FastfoodRepositiry>();
 builder.Services.AddScoped<IOrderRepository, OrderRepository>();
-
+builder.Services.AddScoped<IUserRepositories, UserRepository>();
 
 // Add controllers
 builder.Services.AddControllers();
 
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
+builder.Services.AddSwaggerGen(swagger =>
+{
+	swagger.EnableAnnotations();
+	swagger.SwaggerDoc("v1", new Microsoft.OpenApi.Models.OpenApiInfo { Title = "PizzaShopAPI", Version = "V1"});
+});
 
 var app = builder.Build(); 
 

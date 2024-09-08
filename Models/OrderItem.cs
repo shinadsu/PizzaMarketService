@@ -1,9 +1,11 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using System.Text.Json.Serialization;
 
 namespace PizzaMarketService.Models
 {
 	public class OrderItem
 	{
+		[JsonIgnore]
 		public int Id							{ get; set; }
 		public int OrderId						{ get; set; }
 		public string Name						{ get; set; }

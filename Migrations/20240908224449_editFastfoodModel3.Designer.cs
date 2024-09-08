@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using PizzaMarketService.Data;
 
@@ -11,9 +12,11 @@ using PizzaMarketService.Data;
 namespace PizzaMarketService.Migrations
 {
     [DbContext(typeof(DataContext))]
-    partial class DataContextModelSnapshot : ModelSnapshot
+    [Migration("20240908224449_editFastfoodModel3")]
+    partial class editFastfoodModel3
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -258,7 +261,7 @@ namespace PizzaMarketService.Migrations
             modelBuilder.Entity("PizzaMarketService.Models.Category", b =>
                 {
                     b.HasOne("PizzaMarketService.Models.Fastfood", null)
-                        .WithMany("Categorys")
+                        .WithMany("Category")
                         .HasForeignKey("FastfoodId");
                 });
 
@@ -289,7 +292,7 @@ namespace PizzaMarketService.Migrations
 
             modelBuilder.Entity("PizzaMarketService.Models.Fastfood", b =>
                 {
-                    b.Navigation("Categorys");
+                    b.Navigation("Category");
 
                     b.Navigation("ingredients");
                 });
