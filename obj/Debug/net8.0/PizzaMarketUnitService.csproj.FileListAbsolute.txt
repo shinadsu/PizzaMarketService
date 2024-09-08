@@ -221,3 +221,4 @@ C:\Users\Daniil\source\repos\PizzaMarketUnitService\bin\Debug\net8.0\ru\Microsof
 C:\Users\Daniil\source\repos\PizzaMarketUnitService\bin\Debug\net8.0\tr\Microsoft.Testing.Platform.MSBuild.resources.dll
 C:\Users\Daniil\source\repos\PizzaMarketUnitService\bin\Debug\net8.0\zh-Hans\Microsoft.Testing.Platform.MSBuild.resources.dll
 C:\Users\Daniil\source\repos\PizzaMarketUnitService\bin\Debug\net8.0\zh-Hant\Microsoft.Testing.Platform.MSBuild.resources.dll
+C:\Users\Daniil\source\repos\PizzaMarketUnitService\obj\Debug\net8.0\PizzaMarketUnitService.sourcelink.json
