@@ -1,3 +1,3 @@
 # PizzaMarketService
 
-# REST API Service (optional: unit testing + desktop app)
+# REST API Service (optional: unit testing + ASP.NEt Site)
