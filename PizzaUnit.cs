@@ -18,7 +18,6 @@ namespace PizzaMarketUnitService
 		public void SetUp()
 		{
 			_repositoryMock = new Mock<IPizzaRepository>();
-
 			
 			_repositoryMock.Setup(r => r.GetPizza(It.IsAny<int>())).ReturnsAsync(new Pizza
 			{

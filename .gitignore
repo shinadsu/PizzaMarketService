@@ -1,2 +1,3 @@
-﻿/.bin/
+﻿# removing dirs
+/.bin/
 /.obj
