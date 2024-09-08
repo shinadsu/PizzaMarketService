@@ -9,32 +9,38 @@ namespace PizzaMarketService.Controllers
 {
 	[Route("api/[controller]")]
 	[ApiController]
-	public class PizzaController : ControllerBase
-	{
-		private IPizzaRepository _pizzaRepository;
-		public PizzaController(IPizzaRepository pizzaRepository)
+	public class OrderController : ControllerBase
+	{	
+		private IOrderRepository _orderRepository;
+		public OrderController(IOrderRepository orderRepository) 
 		{
-			_pizzaRepository = pizzaRepository;
+			_orderRepository = orderRepository;
 		}
 
-		[HttpGet(Name = "GetPizzasAsync")]
-		public async Task<List<Pizza>> GetPizzasAsync()
+		[HttpGet]
+		public async Task<List<Order>> Get()
 		{
-			return await _pizzaRepository.GetPizzas();
-		}
+			try
+			{
+				return await _orderRepository.Get();
+			}
+			catch (Exception ex)
+			{
+				throw new Exception(ex.Message);
+			}
 
+		}
 
 		[HttpGet("id:int")]
-		public async Task<Pizza> GetPizza(int id)
+		public async Task<Order> Get(int id)
 		{
-			return await _pizzaRepository.GetPizza(id);
+			return await _orderRepository.GetWithid(id);
 		}
 
-
-		[HttpPost(Name = "AddPizzaAsync")]
-		public async Task<IActionResult> AddPizzaAsync(Pizza pizza)
+		[HttpPost]
+		public async Task<IActionResult> Post(Order order)
 		{
-			if (pizza == null)
+			if (order == null)
 				return BadRequest("Order is null");
 
 			if (!ModelState.IsValid)
@@ -42,10 +48,10 @@ namespace PizzaMarketService.Controllers
 
 			try
 			{
-				await _pizzaRepository.AddAsync(pizza);
-				return Ok(pizza);
+				await _orderRepository.post(order);
+				return Ok(order); 
 			}
-			catch (DbUpdateException dbEx)
+			catch (DbUpdateException dbEx) 
 			{
 				return StatusCode(500, $"Database update error: {dbEx.InnerException?.Message ?? dbEx.Message}");
 			}
@@ -55,17 +61,16 @@ namespace PizzaMarketService.Controllers
 			}
 		}
 
-
 		[HttpDelete("id:int")]
 		[IgnoreAntiforgeryToken]
-		public async Task<IActionResult> DeletePizza(int id)
+		public async Task<IActionResult> delete(int id)
 		{
 			if (id == 0)
 				return BadRequest("id is not valid");
 
 			try
 			{
-				await _pizzaRepository.DeleteAsync(id);
+				await _orderRepository.delete(id);
 				return Ok("the order was deleted");
 			}
 			catch (DbException DBex)
@@ -77,5 +82,6 @@ namespace PizzaMarketService.Controllers
 				return StatusCode(500, $"Internal server error: {ex.Message}");
 			}
 		}
+
 	}
 }

@@ -13,7 +13,9 @@ builder.Services.AddDbContext<DataContext>(options =>
 		sqlServerOptionsAction.EnableRetryOnFailure(5, TimeSpan.FromSeconds(10), null);
 	}));
 
+// scoped interface & clss 
 builder.Services.AddScoped<IPizzaRepository, PizzaRepository>();
+builder.Services.AddScoped<IOrderRepository, OrderRepository>();
 
 
 // Add controllers
@@ -23,7 +25,7 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
-var app = builder.Build(); // builder.Build() должен быть после всех добавлений в коллекцию сервисов
+var app = builder.Build(); 
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())

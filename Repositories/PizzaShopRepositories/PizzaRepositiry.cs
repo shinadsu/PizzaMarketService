@@ -37,7 +37,7 @@ namespace PizzaMarketService.Repositories.PizzaShopRepositories
 
 		public async Task<List<Pizza>> GetPizzas()
 		{
-			return await _dataContext.pizzas.Where(p => p.IsAvailable != false).ToListAsync();
+			return await _dataContext.pizzas.ToListAsync();
 		}
 
 	}
