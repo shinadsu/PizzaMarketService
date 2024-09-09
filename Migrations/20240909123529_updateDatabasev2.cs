@@ -5,7 +5,7 @@
 namespace PizzaMarketService.Migrations
 {
     /// <inheritdoc />
-    public partial class editFastfood4 : Migration
+    public partial class updateDatabasev2 : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)

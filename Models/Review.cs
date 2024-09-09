@@ -4,7 +4,7 @@ namespace PizzaMarketService.Models
 {
 	public class Review
 	{
-		[JsonIgnore]
+		
 		public int Id				{ get; set; }
 		public int PizzaId			{ get; set; }
 		public int UserId			{ get; set; }

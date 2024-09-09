@@ -1,84 +1,81 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using PizzaMarketService.Models;
 using PizzaMarketService.Repositories.IPizzaShopRepository;
-using Swashbuckle.AspNetCore.Annotations;
 using System.Data.Common;
 
 namespace PizzaMarketService.Controllers
 {
-	[Route("api/[controller]")]
 	[ApiController]
+	[Route("api/[controller]")]
 	public class UserController : ControllerBase
-	{
-		private IUserRepositories _userRepositories;
-		public UserController(IUserRepositories userRepositories) 
-		{ 
-			_userRepositories = userRepositories;
-		}
+	{	
+		private IUserInterface _userInterface;
+		public UserController(IUserInterface userInterface) 
+		{
+			_userInterface = userInterface;
+		}	
 
-		
 		[HttpGet]
-		public async Task<List<User>> getUsers()
+		public async Task<List<User>> GetUsers()
 		{
-			return await _userRepositories.GetAll();
+			return await _userInterface.GET();
 		}
 
-		[HttpGet("id:int")]
-		public async Task<User> getUser(int id)
+		[HttpGet("{id:int}")]
+		public async Task<User> GetUser(int id)
 		{
-			if (id == 0) throw new ArgumentException("id caanot be 0");
+			if (id == 0)
+				throw new ArgumentException(nameof(id));
 
 			try
 			{
-				return await _userRepositories.GetById(id);
+				return await _userInterface.GET(id);
 			}
-			catch (DbException ex)
+			catch (Exception ex)
 			{
-				throw new Exception($"invalid request: {ex.Message}");
+
+				throw new Exception(ex.Message);
 			}
 		}
 
 		[HttpPost]
-		public async Task<IActionResult> postUser(User user)
+		public async Task<IActionResult> PostUser(User user)
 		{
-			if (user == null) 
-				return BadRequest("user cannot be null");
+			if (user == null)
+				return BadRequest("User cannot be null");
 
 			if (!ModelState.IsValid)
-				return BadRequest("not all params is valid");
+				return BadRequest("data is not valid");
 
 			try
 			{
-				await _userRepositories.Post(user);
-				return Ok(user);
+				await _userInterface.POST(user);
+				return Ok();
 			}
-			catch (DbException ex)
+			catch (DbException dbEx)
 			{
-				return StatusCode(500, $"invalid operation to database: {ex.InnerException?.Message ?? ex.Message}");
+				return StatusCode(500, $"Invalid operationd to database: {dbEx.InnerException?.Message ?? dbEx.Message}");
 			}
 			catch (Exception ex)
 			{
 				return StatusCode(500, $"internal server error: {ex.Message}");
 			}
-
-			
 		}
 
-		[SwaggerOperation("Adds a new pet using the properties supplied, returns a GUID reference for the pet created.")]
-		[HttpDelete("id:int")]
-		public async Task<IActionResult> delelteUser(int id)
+		[HttpDelete]
+		public async Task<IActionResult> DeleteUser(int id)
 		{
-			if (id == 0)
-				return BadRequest("id caanot be 0");
+			if (id == null || id == 0)
+				return BadRequest("User cannot be null");
 
 			try
 			{
-				await _userRepositories.Delete(id);
-				return Ok("user is deleted");
+				await _userInterface.DELETE(id);
+				return Ok();
 			}
-			catch (DbException ex)
+			catch (DbException dbEx)
 			{
-				return StatusCode(500, $"invalid operation to database: {ex.InnerException?.Message ?? ex.Message}");
+				return StatusCode(500, $"Invalid operationd to database: {dbEx.InnerException?.Message ?? dbEx.Message}");
 			}
 			catch (Exception ex)
 			{
@@ -86,5 +83,30 @@ namespace PizzaMarketService.Controllers
 			}
 		}
 
+		[HttpPatch]
+		public async Task<IActionResult> UpdateUser(User updateUser, int id)
+		{
+			var oldUser = await _userInterface.GET(id);
+
+			if (oldUser == null || updateUser == null)
+				throw new ArgumentNullException("one of parametrs caanot be null");
+
+			if (!ModelState.IsValid)
+				return BadRequest("model is incorrect");
+
+			try
+			{
+				await _userInterface.PUTCH(updateUser);
+				return Ok();
+			}
+			catch (DbException dbEx)
+			{
+				return StatusCode(500, $"internal databse error: {dbEx.InnerException?.Message ?? dbEx.Message}");
+			}
+			catch (Exception ex)
+			{
+				return StatusCode(500, $"internal server error: {ex.Message}");
+			}
+		}
 	}
 }

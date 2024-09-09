@@ -2,6 +2,7 @@ using PizzaMarketService.Data;
 using PizzaMarketService.Repositories.IPizzaShopRepository;
 using PizzaMarketService.Repositories.PizzaShopRepositories;
 using Microsoft.EntityFrameworkCore;
+using PizzaMarketService.Controllers;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -13,10 +14,11 @@ builder.Services.AddDbContext<DataContext>(options =>
 		sqlServerOptionsAction.EnableRetryOnFailure(5, TimeSpan.FromSeconds(10), null);
 	}));
 
+
 // scoped interface & clss 
-builder.Services.AddScoped<IFastfoodRepository, FastfoodRepositiry>();
-builder.Services.AddScoped<IOrderRepository, OrderRepository>();
-builder.Services.AddScoped<IUserRepositories, UserRepository>();
+builder.Services.AddScoped<IUserInterface, UserRepositories>();
+builder.Services.AddScoped<IProductInterface, ProductRepository>();
+builder.Services.AddScoped<IOrderInterface, OrderRepositories>();
 
 // Add controllers
 builder.Services.AddControllers();

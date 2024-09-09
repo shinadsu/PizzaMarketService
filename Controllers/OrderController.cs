@@ -1,85 +1,114 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 using PizzaMarketService.Models;
 using PizzaMarketService.Repositories.IPizzaShopRepository;
-using PizzaMarketService.Repositories.PizzaShopRepositories;
 using System.Data.Common;
 
 namespace PizzaMarketService.Controllers
 {
-	[Route("api/[controller]")]
 	[ApiController]
+	[Route("api/[controller]")]
 	public class OrderController : ControllerBase
 	{	
-		private IOrderRepository _orderRepository;
-		public OrderController(IOrderRepository orderRepository) 
+		private IOrderInterface _orderInterface;
+		public OrderController(IOrderInterface orderInterface) 
 		{
-			_orderRepository = orderRepository;
+			_orderInterface = orderInterface;
 		}
+
 
 		[HttpGet]
-		public async Task<List<Order>> Get()
+		public async Task<List<Order>> GetOrders()
 		{
+			return await _orderInterface.GET();
+		}
+
+
+		[HttpGet( "{id:int}" )]
+		public async Task<Order> GetProducts(int id)
+		{
+			if ( id == 0 )
+				throw new ArgumentException( nameof( id ) );
+
 			try
 			{
-				return await _orderRepository.Get();
+				return await _orderInterface.GET( id );
 			}
-			catch (Exception ex)
+			catch ( Exception ex )
 			{
-				throw new Exception(ex.Message);
+
+				throw new Exception( ex.Message );
 			}
-
 		}
 
-		[HttpGet("id:int")]
-		public async Task<Order> Get(int id)
-		{
-			return await _orderRepository.GetWithid(id);
-		}
 
 		[HttpPost]
-		public async Task<IActionResult> Post(Order order)
+		public async Task<IActionResult> PostProduct(Order order)
 		{
-			if (order == null)
-				return BadRequest("Order is null");
+			if ( order == null )
+				return BadRequest( "User cannot be null" );
 
-			if (!ModelState.IsValid)
-				return BadRequest(ModelState);
+			if ( !ModelState.IsValid )
+				return BadRequest( "data is not valid" );
 
 			try
 			{
-				await _orderRepository.post(order);
-				return Ok(order); 
+				await _orderInterface.POST( order );
+				return Ok();
 			}
-			catch (DbUpdateException dbEx) 
+			catch ( DbException dbEx )
 			{
-				return StatusCode(500, $"Database update error: {dbEx.InnerException?.Message ?? dbEx.Message}");
+				return StatusCode( 500, $"Invalid operationd to database: {dbEx.InnerException?.Message ?? dbEx.Message}" );
 			}
-			catch (Exception ex)
+			catch ( Exception ex )
 			{
-				return StatusCode(500, $"Internal server error: {ex.Message}");
+				return StatusCode( 500, $"internal server error: {ex.Message}" );
 			}
 		}
 
-		[HttpDelete("id:int")]
-		[IgnoreAntiforgeryToken]
-		public async Task<IActionResult> delete(int id)
+		[HttpDelete("{id:int}")]
+		public async Task<IActionResult> DeleteProduct(int id)
 		{
-			if (id == 0)
-				return BadRequest("id is not valid");
+			if ( id == null || id == 0 )
+				return BadRequest( "User cannot be null" );
 
 			try
 			{
-				await _orderRepository.delete(id);
-				return Ok("the order was deleted");
+				await _orderInterface.DELETE( id );
+				return Ok();
 			}
-			catch (DbException DBex)
+			catch ( DbException dbEx )
 			{
-				return StatusCode(500, $"Database delete error: {DBex.InnerException?.Message ?? DBex.Message}");
+				return StatusCode( 500, $"Invalid operationd to database: {dbEx.InnerException?.Message ?? dbEx.Message}" );
 			}
-			catch (Exception ex)
+			catch ( Exception ex )
 			{
-				return StatusCode(500, $"Internal server error: {ex.Message}");
+				return StatusCode( 500, $"internal server error: {ex.Message}" );
+			}
+		}
+
+		[HttpPatch]
+		public async Task<IActionResult> updateOrder(Order updatedOrder, int id)
+		{
+			var oldestUser = await _orderInterface.GET(id);
+
+			if ( _orderInterface == null || oldestUser == null )
+				return BadRequest( "one of the parametrs is null" );
+
+			if ( !ModelState.IsValid )
+				return BadRequest( "bad request" );
+
+			try
+			{
+				await _orderInterface.PUTCH( updatedOrder );
+				return Ok();
+			}
+			catch ( DbException dbEx )
+			{
+				return StatusCode( 500, $"internal databse error: {dbEx.InnerException?.Message ?? dbEx.Message}" );
+			}
+			catch ( Exception ex )
+			{
+				return StatusCode( 500, $"internal server error: {ex.InnerException?.Message ?? ex.Message}" );
 			}
 		}
 

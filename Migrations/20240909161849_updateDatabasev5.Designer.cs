@@ -12,8 +12,8 @@ using PizzaMarketService.Data;
 namespace PizzaMarketService.Migrations
 {
     [DbContext(typeof(DataContext))]
-    [Migration("20240908224251_editFastfoodModel2")]
-    partial class editFastfoodModel2
+    [Migration("20240909161849_updateDatabasev5")]
+    partial class updateDatabasev5
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -24,6 +24,51 @@ namespace PizzaMarketService.Migrations
                 .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
+
+            modelBuilder.Entity("CategoryProduct", b =>
+                {
+                    b.Property<int>("CategoriesId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("ProductId")
+                        .HasColumnType("int");
+
+                    b.HasKey("CategoriesId", "ProductId");
+
+                    b.HasIndex("ProductId");
+
+                    b.ToTable("ProductCategory", (string)null);
+                });
+
+            modelBuilder.Entity("IngredientProduct", b =>
+                {
+                    b.Property<int>("IngredientsId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("ProductId")
+                        .HasColumnType("int");
+
+                    b.HasKey("IngredientsId", "ProductId");
+
+                    b.HasIndex("ProductId");
+
+                    b.ToTable("ProductIngredients", (string)null);
+                });
+
+            modelBuilder.Entity("OrderOrderItem", b =>
+                {
+                    b.Property<int>("OrderId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("OrderItemsId")
+                        .HasColumnType("int");
+
+                    b.HasKey("OrderId", "OrderItemsId");
+
+                    b.HasIndex("OrderItemsId");
+
+                    b.ToTable("OrderOrderItems", (string)null);
+                });
 
             modelBuilder.Entity("PizzaMarketService.Models.Category", b =>
                 {
@@ -41,42 +86,6 @@ namespace PizzaMarketService.Migrations
                     b.ToTable("categories");
                 });
 
-            modelBuilder.Entity("PizzaMarketService.Models.Fastfood", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<int?>("CategoryId")
-                        .HasColumnType("int");
-
-                    b.Property<string>("Description")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("ImageURL")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<bool>("IsAvailable")
-                        .HasColumnType("bit");
-
-                    b.Property<string>("Name")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<decimal>("Price")
-                        .HasColumnType("decimal(18,2)");
-
-                    b.Property<string>("Size")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("CategoryId");
-
-                    b.ToTable("fastfoods");
-                });
-
             modelBuilder.Entity("PizzaMarketService.Models.Ingredient", b =>
                 {
                     b.Property<int>("Id")
@@ -88,9 +97,6 @@ namespace PizzaMarketService.Migrations
                     b.Property<string>("Description")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int?>("FastfoodId")
-                        .HasColumnType("int");
-
                     b.Property<bool>("IsAvailable")
                         .HasColumnType("bit");
 
@@ -98,8 +104,6 @@ namespace PizzaMarketService.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("FastfoodId");
 
                     b.ToTable("ingredients");
                 });
@@ -145,14 +149,10 @@ namespace PizzaMarketService.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
                     b.Property<int>("OrderId")
                         .HasColumnType("int");
 
-                    b.Property<int>("PizzaId")
+                    b.Property<int>("ProductID")
                         .HasColumnType("int");
 
                     b.Property<int>("Quantity")
@@ -163,9 +163,40 @@ namespace PizzaMarketService.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("OrderId");
+                    b.HasIndex("ProductID");
 
                     b.ToTable("orderItems");
+                });
+
+            modelBuilder.Entity("PizzaMarketService.Models.Product", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("Description")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("ImageURL")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool?>("IsAvailable")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("Name")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<decimal?>("Price")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<string>("Size")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("products");
                 });
 
             modelBuilder.Entity("PizzaMarketService.Models.Promotion", b =>
@@ -258,53 +289,71 @@ namespace PizzaMarketService.Migrations
                     b.ToTable("users");
                 });
 
-            modelBuilder.Entity("PizzaMarketService.Models.Fastfood", b =>
+            modelBuilder.Entity("CategoryProduct", b =>
                 {
-                    b.HasOne("PizzaMarketService.Models.Category", "Category")
+                    b.HasOne("PizzaMarketService.Models.Category", null)
                         .WithMany()
-                        .HasForeignKey("CategoryId");
+                        .HasForeignKey("CategoriesId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
-                    b.Navigation("Category");
+                    b.HasOne("PizzaMarketService.Models.Product", null)
+                        .WithMany()
+                        .HasForeignKey("ProductId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
                 });
 
-            modelBuilder.Entity("PizzaMarketService.Models.Ingredient", b =>
+            modelBuilder.Entity("IngredientProduct", b =>
                 {
-                    b.HasOne("PizzaMarketService.Models.Fastfood", null)
-                        .WithMany("ingredients")
-                        .HasForeignKey("FastfoodId");
+                    b.HasOne("PizzaMarketService.Models.Ingredient", null)
+                        .WithMany()
+                        .HasForeignKey("IngredientsId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("PizzaMarketService.Models.Product", null)
+                        .WithMany()
+                        .HasForeignKey("ProductId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("OrderOrderItem", b =>
+                {
+                    b.HasOne("PizzaMarketService.Models.Order", null)
+                        .WithMany()
+                        .HasForeignKey("OrderId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("PizzaMarketService.Models.OrderItem", null)
+                        .WithMany()
+                        .HasForeignKey("OrderItemsId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
                 });
 
             modelBuilder.Entity("PizzaMarketService.Models.Order", b =>
                 {
-                    b.HasOne("PizzaMarketService.Models.User", null)
-                        .WithMany("OrderHistory")
+                    b.HasOne("PizzaMarketService.Models.User", "User")
+                        .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+
+                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("PizzaMarketService.Models.OrderItem", b =>
                 {
-                    b.HasOne("PizzaMarketService.Models.Order", null)
-                        .WithMany("OrderItems")
-                        .HasForeignKey("OrderId")
+                    b.HasOne("PizzaMarketService.Models.Product", "product")
+                        .WithMany()
+                        .HasForeignKey("ProductID")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
-                });
 
-            modelBuilder.Entity("PizzaMarketService.Models.Fastfood", b =>
-                {
-                    b.Navigation("ingredients");
-                });
-
-            modelBuilder.Entity("PizzaMarketService.Models.Order", b =>
-                {
-                    b.Navigation("OrderItems");
-                });
-
-            modelBuilder.Entity("PizzaMarketService.Models.User", b =>
-                {
-                    b.Navigation("OrderHistory");
+                    b.Navigation("product");
                 });
 #pragma warning restore 612, 618
         }

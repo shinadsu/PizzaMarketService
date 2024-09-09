@@ -3,29 +3,29 @@ using PizzaMarketService.Repositories.IPizzaShopRepository;
 
 namespace PizzaMarketService.Repositories.PizzaShopRepositories
 {
-	public class PromotionRepository : IPromotionInterface
+	public class OrderItemRepositories : IOrderItemInterface
 	{
-		public Task<Promotion> DELETE(int id)
+		public Task<OrderItem> DELETE(int id)
 		{
 			throw new NotImplementedException();
 		}
 
-		public Task<List<Promotion>> GET()
+		public Task<List<OrderItem>> GET()
 		{
 			throw new NotImplementedException();
 		}
 
-		public Task<Promotion> GET(int id)
+		public Task<OrderItem> GET(int id)
 		{
 			throw new NotImplementedException();
 		}
 
-		public Task<Promotion> POST(Review review)
+		public Task<OrderItem> POST(OrderItem orderItem)
 		{
 			throw new NotImplementedException();
 		}
 
-		public Task<Promotion> PUTCH(Review reviewtoUpdate)
+		public Task<OrderItem> PUTCH(OrderItem orderItemtoUpdate)
 		{
 			throw new NotImplementedException();
 		}
